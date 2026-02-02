@@ -1,0 +1,58 @@
+/* Import Font dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Outfit:wght@100..900&display=swap');
+
+*, :after, :before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+    /* Palet Warna Sesuai Referensi Gambar */
+    --green-dark: #1a5049;
+    --green-leaf: #2d6a61;
+    --orange-accent: #f2994a;
+    --white-soft: #fbfbfb;    /* Lebih bersih dari white-plan sebelumnya */
+    --gray-light: #f0f2f0;    /* Untuk background netral */
+    --gray-border: #e0e3de;
+   
+    /* Tipografi Baru */
+    --font-main: "Plus Jakarta Sans", sans-serif;
+    --font-heading: "Outfit", sans-serif;
+    
+    /* Elevasi & Shadow */
+    --shadow-sm: 0 2px 8px rgba(26, 80, 73, 0.05);
+    --shadow-md: 0 10px 30px rgba(26, 80, 73, 0.08);
+    --radius-lg: 20px; /* Sesuai dengan gambar yang sangat rounded */
+    --radius-md: 12px;
+}
+
+body {
+    background-color: var(--gray-light);
+    font-family: var(--font-main);
+    color: var(--green-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Base Utility */
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+}
+
+ul, ol { list-style: none; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* Scrollbar Custom agar senada */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--gray-light); }
+::-webkit-scrollbar-thumb { 
+    background: var(--gray-border); 
+    border-radius: 10px; 
+}
+::-webkit-scrollbar-thumb:hover { background: var(--green-leaf); }

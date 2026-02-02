@@ -1,0 +1,200 @@
+/* Container utama */
+.container-produk {
+  min-height: 100vh; /* Gunakan min-height agar tidak terpotong jika data banyak */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+}
+
+/* Card pembungkus */
+.card-produk {
+    background: white;
+    border: none; /* Hilangkan border tebal */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    width: 90%;
+    max-width: 1100px;
+}
+
+/* Styling Tabel */
+.content {
+  width: 100%;
+  overflow-x: auto; /* Agar responsif di layar kecil */
+}
+
+/* Styling Tabel yang lebih 'Clean' */
+table {
+    border-spacing: 0 8px; /* Memberi jarak antar baris */
+    border-collapse: separate;
+}
+
+thead th {
+    background: transparent; /* Tidak perlu background gelap penuh */
+    color: var(--green-leaf);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 10px 20px;
+    border-bottom: 2px solid var(--gray-light);
+}
+
+tbody tr {
+    background-color: var(--white-soft);
+    transition: transform 0.2s;
+}
+
+tbody td {
+    padding: 16px 20px;
+    border: none;
+}
+
+/* Membuat baris melengkung di ujungnya saja */
+tbody tr td:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+tbody tr td:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+
+tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: var(--shadow-sm);
+    background-color: white;
+}
+
+/* --- Penambahan Variabel Warna dari Gambar --- */
+:root {
+  --orange-accent: #f2994a; /* Warna oranye dari ikon di gambar */
+  --soft-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Header di dalam Card */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--green-old);
+}
+
+/* --- Buttons --- */
+.btn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  font-family: var(--font-family-inter);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-add {
+    background-color: var(--orange-accent);
+    color: white;
+    box-shadow: 0 4px 14px rgba(242, 153, 74, 0.4);
+}
+
+.btn-add:hover {
+  background-color: #133d38;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(26, 80, 73, 0.2);
+}
+
+.btn-secondary {
+  background-color: var(--gray-plan);
+  color: var(--green-old);
+}
+
+/* Action Icons in Table */
+.action-cell {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-icon {
+  background: none;
+  border: 1px solid var(--gray-plan);
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-icon.edit:hover { border-color: var(--green-old); background: #f0f7f6; }
+.btn-icon.delete:hover { border-color: #eb5757; background: #fff5f5; }
+
+/* --- Modal Styling --- */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(26, 80, 73, 0.4); /* Overlay dengan warna tema */
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: 20px; /* Rounded besar sesuai gambar */
+  width: 400px;
+  box-shadow: var(--soft-shadow);
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--gray-plan);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--gray-plan);
+  border-radius: 10px;
+  outline: none;
+}
+
+.text-error {
+  font-size : 14px;
+  color : red;
+} 
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+

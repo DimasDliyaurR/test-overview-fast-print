@@ -1,0 +1,48 @@
+*, :after, :before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+ul, ol {
+  list-style-type: none; /* removes bullets/numbers */
+  margin: 0;            /* optional: removes default margin */
+  padding: 0;           /* optional: removes default padding/indentation */
+}
+
+a {
+    text-decoration : none;
+}
+
+img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+}
+
+:root {
+    --font-family-inter : "inter var experimental", "inter var", inter, -apple-system, blinkmacsystemfont, "segoe ui", roboto, oxygen, ubuntu, cantarell, "fira sans", "droid sans", "helvetica neue", sans-serif;
+    --font-family-mono :  menlo, monaco, consolas, "courier new", monospace;
+
+    --tag-line : -webkit-linear-gradient(315deg, #42d392 25%,#647eff);
+    --white-primary : #e1e1e1;
+    --green-primary : #42d392;
+    --gray-primary : rgba(235, 235, 235, .6);
+    --gray-old-primary : rgba(235, 235, 235, 0.44);
+}
+
+:root {
+    --nav-height : 55px;
+    --max-width : 240px;
+}
+
+body {
+    min-width: 50vw;
+    font-family: var(--font-family-inter);
+    background-color: #1a1a1a;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.icon {
+    stroke-width: 1.6;
+    width: 15px;
+}

@@ -1,0 +1,120 @@
+{% extends "base.layout.html" %}
+
+{% block title %} Produk {% endblock %}
+
+{% block css_extras %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/produk/style.css' %}">
+{% endblock %}
+
+{% block js_extras_head %}
+{% load static %}
+<script src="{% static 'js/modal.produk.js' %}"></script>
+<script src="{% static 'js/crud-event.produk.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-produk">
+  <div class="card-produk">
+
+    <div class="header-content">
+      <h2 class="title">Daftar Produk</h2>
+      <button class="btn btn-add" onclick="openModal('modalProduk')">
+        <span>+</span> Tambah Produk
+      </button>
+    </div>
+
+    <div class="content">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Nama Produk</th>
+            <th>Kategori</th>
+            <th style="text-align: center;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in produk %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.nama_produk }}</td>
+            <td>{{ item.kategori.nama_kategori }}</td>
+            <td class="action-cell">
+              <button
+                onclick="generateModalUpdate(`{% url 'produk.detail' item.pk %}`,`{% url 'produk.update' item.pk %}`,'{{ item.pk }}')"
+                class="btn-icon edit" title="Edit">✏️</button>
+              <button onclick="onDeleteProduk(`{% url 'produk.delete' item.pk %}`,'{{ csrf_token }}')"
+                class="btn-icon delete" title="Hapus">🗑️</button>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="modalProduk" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Tambah Produk Baru</h3>
+      <span class="close" onclick="closeModal('modalProduk')">&times;</span>
+    </div>
+    <form class="modal-body" method="POST" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label>{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+        <div class="text-error">
+          {{ field.errors.0 }}
+        </div>
+        {% endif %}
+      </div>
+        {% endfor %}
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalProduk')">Batal</button>
+          <button type="submit" class="btn btn-add">Simpan Produk</button>
+        </div>
+    </form>
+
+  </div>
+</div>
+
+<div id="modalProduk-update" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Tambah Produk Baru</h3>
+      <span class="close" onclick="closeModal('modalProduk-update')">&times;</span>
+    </div>
+    <form class="modal-body" onsubmit="onUpdateProduk(this.action,`{{ csrf_token }}`,getFormDataAsJson(event,this.id))" id="formProduk-update" method="POST" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label>{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+        <div class="text-error">
+          {{ field.errors.0 }}
+        </div>
+        {% endif %}
+      </div>
+        {% endfor %}
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalProduk-update')">Batal</button>
+          <button type="submit" class="btn btn-add">Simpan Produk</button>
+          <!-- <button type="submit" class="btn btn-add" onclick="getFormDataAsJson(event,'formProduk-update')">Scrap</button> -->
+        </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}
