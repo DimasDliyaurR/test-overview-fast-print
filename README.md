@@ -16,7 +16,20 @@ Ikuti langkah-langkah berikut untuk menjalankan project di lokal:
     # Linux/Mac
     source venv/bin/activate
     ```
+3. **Buat Enviorment**
+    ```bash
+    cp .env.example .env
+
+    ```
+    Silahkan sesuaikkan dengan environment lokal kalian, jika ingin generate secret key lakukan sebagai berikut
     
+    ```python
+    from django.core.management.utils import get_random_secret_key
+    print(get_random_secret_key())
+
+    ```
+    Hasil generate ambil key dari script python tersebut simpan ke dalam variable environment `SECRET_APP` pada file `.env`
+
 3. **Install Dependencies**
     ```shell
     pip install -r requirements.txt
