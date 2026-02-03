@@ -39,6 +39,10 @@ db_config = {
     "database":  os.environ.get("SQL_DATABASE",""),
 }
 
+def get_unique_value(data,key) :
+    data_raw = list(map(lambda x: x[key], data))
+    return list(dict.fromkeys(data_raw))
+
 # Check the table has the data or not
 def check_value_table(sql):
     conn = mysql.connector.connect(**db_config)
@@ -82,7 +86,39 @@ def insert_into_product(product_list):
         cursor.execute("ALTER TABLE produk AUTO_INCREMENT = 1;")
         cursor.executemany(query, data_to_save)
         conn.commit()
-        print(f"Data tersinkronisasi ke MySQL.")
+        print(f"Data produk tersinkronisasi ke MySQL.")
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error: {err}")
+    finally:
+        if conn.is_connected():
+            cursor.close()
+            conn.close()
+
+def insert_into_status(status_list):
+
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+
+    try:
+        # Query INSERT dengan ON DUPLICATE KEY UPDATE (Upsert)
+        query = """
+            INSERT INTO status (nama_status)
+            VALUES (%s)
+       """
+
+        if check_value_table("select * from status"):
+            print("data produk sudah ada")
+            return
+
+        data_to_save = [
+            tuple([i])
+            for i in status_list
+        ]
+
+        cursor.executemany(query, data_to_save)
+        conn.commit()
+        print(f"Data status tersinkronisasi ke MySQL.")
 
     except mysql.connector.Error as err:
         print(f"MySQL Error: {err}")
@@ -110,12 +146,10 @@ def insert_into_kategori(kategori_list):
 
         data_to_save = [tuple([kategori]) for kategori in kategori_list]
 
-        print(type(data_to_save[0]))
-        print("kategori_list:", type(data_to_save), data_to_save)
         cursor.execute("ALTER TABLE kategori AUTO_INCREMENT = 1;")
         cursor.executemany(query, data_to_save)
         conn.commit()
-        print(f"Data tersinkronisasi ke MySQL.")
+        print(f"Data tersinkronisasi kategori ke MySQL.")
 
     except mysql.connector.Error as err:
         print(f"MySQL Error: {err}")
@@ -131,15 +165,14 @@ try:
     res_data = response.json()
     print("STATUS RESPONSE:", json.dumps(res_data, indent=4, sort_keys=True))
 
-    status = ["tidak bisa dijual", "bisa dijual"]
     data = res_data["data"]
-    data_kategori_raw = list(map(lambda x: x["kategori"], data))
-    data_kategori = list(dict.fromkeys(data_kategori_raw))
+    data_kategori = get_unique_value(data,"kategori")
+    data_status = get_unique_value(data,"status")
     data_product = []
 
     print("Jumlah data :", len(data))
     print("data no :", list(data))
-    
+    print(data_status)    
     # Get Produk Data
     for i in range(len(data)):
         data_inner_product = {}
@@ -149,13 +182,15 @@ try:
         data_inner_product["nama_produk"] = product["nama_produk"]
         data_inner_product["harga"] = product["harga"]
         data_inner_product["kategori"] = data_kategori.index(product["kategori"]) + 1
-        data_inner_product["status"] = status.index(product["status"]) + 1
+        data_inner_product["status"] = data_status.index(product["status"]) + 1
 
         data_product.append(data_inner_product)
 
     print("get res...")
     print("insert into kategori with value:", ",".join(data_kategori))
     insert_into_kategori(data_kategori)
+    print("insert into status")
+    insert_into_status(data_status)
     print("insert into produk")
     insert_into_product(data_product)
 

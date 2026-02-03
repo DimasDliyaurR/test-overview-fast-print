@@ -19,7 +19,7 @@ class ProdukView(CreateView) :
 
     def get_context_data(self, **kwargs) :
         context = super().get_context_data(**kwargs)
-        context["produk"] = Produk.objects.filter(status_id=2)
+        context["produk"] = Produk.objects.filter(status_id=1)
         context["kategori"] = Kategori.objects.all()
         context["status"] = Status.objects.all()
         return context
