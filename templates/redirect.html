@@ -1,0 +1,147 @@
+ <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengalihkan...</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/produk/style.css' %}"> 
+    <style>
+        /* CSS KHUSUS HALAMAN REDIRECT (Bisa dipisah ke file css sendiri) */
+        
+        body {
+            /* Background fill agar card putih terlihat kontras */
+            background-color: #8fa8a3; /* Warna muted green sesuai gambar referensi */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .redirect-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 32px; /* Radius sangat bulat sesuai referensi */
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(26, 80, 73, 0.15);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Animasi Loader Lingkaran Ganda */
+        .loader-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .spinner {
+            width: 100%;
+            height: 100%;
+            border: 6px solid var(--gray-light);
+            border-top-color: var(--green-dark); /* Hijau Tua */
+            border-bottom-color: var(--orange-accent); /* Oranye */
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: var(--font-heading);
+            color: var(--green-dark);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+            max-width: 280px; /* Agar teks tidak terlalu lebar */
+        }
+
+        /* Tombol Manual */
+        .btn-redirect {
+            margin-top: 10px;
+            background-color: var(--orange-accent);
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 50px; /* Pill shape */
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(242, 153, 74, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+
+        .btn-redirect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(242, 153, 74, 0.5);
+        }
+
+        /* Animasi Masuk */
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Progress Text kecil */
+        .timer-text {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: -10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="redirect-card">
+        <div class="loader-container">
+          {% load static %}
+          <img src="{% static 'asset/rocket.png' %}" alt="">
+        </div>
+
+        <h1>Mengalihkan Anda...</h1>
+        <p>Mohon tunggu sebentar, kami sedang menyiapkan halaman dashboard untuk Anda.</p>
+        
+        <span class="timer-text">Otomatis dalam <span id="countdown">3</span> detik</span>
+
+        <a href="{% url 'produk' %}" id="targetLink" style="text-decoration:none" class="btn btn-add">Lanjutkan Sekarang</a>
+    </div>
+
+    <script>
+        // Konfigurasi
+      const targetUrl = "{% url 'produk' %}";
+        let timeLeft = 3; // Waktu dalam detik
+        const countdownEl = document.getElementById('countdown');
+
+        // Fungsi Update Timer
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.href = targetUrl;
+            }
+        }, 1000);
+
+        // Fallback: Jika user klik tombol manual
+        document.getElementById('targetLink').href = targetUrl;
+    </script>
+
+</body>
+</html>

@@ -1,20 +1,21 @@
+import os
 import requests
 import hashlib
 from datetime import datetime
 import json
 import mysql.connector
+import environ 
 
-# 1. SETUP DATA DINAMIS (Mengikuti Waktu Server/Sekarang)
+env = environ.Env(DEBUG=(bool,True))
+environ.Env.read_env(".env")
+
 url = "https://recruitment.fastprint.co.id/tes/api_tes_programmer"
 now = datetime.now()
 
-# Format Username: tesprogrammer + DDMMYY + C + Jam (2 digit)
-# Berdasarkan header kamu, jam 6 pagi ditulis C06
 tgl_bln_thn = now.strftime("%d%m%y")
 jam = now.strftime("%H")
 username = f"tesprogrammer{tgl_bln_thn}C{jam}"
 
-# Format Password: bisacoding-d-m-y (tanpa leading zero untuk hari/bulan)
 tgl = str(now.day)  # Jadi "1", bukan "01"
 bln = str(now.month)  # Jadi "2", bukan "02"
 thn = now.strftime("%y")  # "26"
@@ -24,7 +25,6 @@ password_md5 = hashlib.md5(password_raw.encode()).hexdigest()
 
 payload = {"username": username, "password": password_md5}
 
-# 2. EKSEKUSI
 session = requests.Session()
 
 print(f"DEBUG:")
@@ -33,13 +33,13 @@ print(f"Target Password : {password_raw} -> {password_md5}")
 print("-" * 30)
 
 db_config = {
-    "host": "localhost",
-    "user": "root",
-    "password": "",
-    "database": "test_fastprint",
+    "host": os.environ.get("SQL_HOST","localhost"),
+    "user":  os.environ.get("SQL_USER","root"),
+    "password": os.environ.get("SQL_PASSWORD",""),
+    "database":  os.environ.get("SQL_DATABASE",""),
 }
 
-
+# Check the table has the data or not
 def check_value_table(sql):
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()
@@ -125,50 +125,45 @@ def insert_into_kategori(kategori_list):
             conn.close()
 
 
-# try:
-response = session.post(url, data=payload)
+try:
+    response = session.post(url, data=payload)
 
-# Cek apakah login berhasil
-res_data = response.json()
-print("STATUS RESPONSE:", json.dumps(res_data, indent=4, sort_keys=True))
+    res_data = response.json()
+    print("STATUS RESPONSE:", json.dumps(res_data, indent=4, sort_keys=True))
 
-status = ["tidak bisa dijual", "bisa dijual"]
-data = res_data["data"]
-data_kategori_raw = list(map(lambda x: x["kategori"], data))
-data_kategori = list(dict.fromkeys(data_kategori_raw))
-data_product = []
+    status = ["tidak bisa dijual", "bisa dijual"]
+    data = res_data["data"]
+    data_kategori_raw = list(map(lambda x: x["kategori"], data))
+    data_kategori = list(dict.fromkeys(data_kategori_raw))
+    data_product = []
 
-print("Jumlah data :", len(data))
-print("data no :", list(data))
+    print("Jumlah data :", len(data))
+    print("data no :", list(data))
+    
+    # Get Produk Data
+    for i in range(len(data)):
+        data_inner_product = {}
 
-for i in range(len(data)):
-    data_inner_product = {}
+        product = data[i]
+        data_inner_product["id_produk"] = int(product["id_produk"])
+        data_inner_product["nama_produk"] = product["nama_produk"]
+        data_inner_product["harga"] = product["harga"]
+        data_inner_product["kategori"] = data_kategori.index(product["kategori"]) + 1
+        data_inner_product["status"] = status.index(product["status"]) + 1
 
-    product = data[i]
-    # print(product)
-    data_inner_product["id_produk"] = int(product["id_produk"])
-    data_inner_product["nama_produk"] = product["nama_produk"]
-    data_inner_product["harga"] = product["harga"]
-    data_inner_product["kategori"] = data_kategori.index(product["kategori"]) + 1
-    data_inner_product["status"] = status.index(product["status"]) + 1
+        data_product.append(data_inner_product)
 
-    data_product.append(data_inner_product)
-    # print(f"kategori id : {data_kategori.index(product['kategori']) + 1} , name : {product['kategori']}")
+    print("get res...")
+    print("insert into kategori with value:", ",".join(data_kategori))
+    insert_into_kategori(data_kategori)
+    print("insert into produk")
+    insert_into_product(data_product)
 
-# print(data_product)
+    # Does the data catch up ?
+    if res_data.get("error") == 0:
+        print("\n✅ LOGIN BERHASIL!")
+    else:
+        print("\n❌ GAGAL:", res_data.get("ket"))
 
-print("get res...")
-print("insert into kategori with value:", ",".join(data_kategori))
-insert_into_kategori(data_kategori)
-print("insert into produk")
-insert_into_product(data_product)
-
-if res_data.get("error") == 0:
-    print("\n✅ LOGIN BERHASIL!")
-    # Biasanya data produk ada di sini atau butuh request tambahan
-else:
-    print("\n❌ GAGAL:", res_data.get("ket"))
-    # Jika gagal dengan '1-2-26', coba ganti password_raw ke '01-02-26'
-
-# except Exception as e:
-#     print(f"Terjadi kesalahan: {e}")
+except Exception as e:
+    print(f"Terjadi kesalahan: {e}")
